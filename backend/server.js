@@ -72,8 +72,9 @@ app.post("/tasks", async (req, res) => {
   try {
     const { title, description, status, priority, due_date } = req.body;
 
-    if (!title) {
-      return res.status(400).json({ error: "Title is required" });
+    // Validate required fields
+    if (!title || !description || !due_date) {
+      return res.status(400).json({ error: "Missing required fields" });
     }
 
     const addQuery = `
@@ -81,20 +82,15 @@ app.post("/tasks", async (req, res) => {
       VALUES (?, ?, ?, ?, ?);
     `;
 
-    await db.run(addQuery, [
-      title,
-      description || null,
-      status || "pending",
-      priority || "Medium",
-      due_date || null,
-    ]);
+    await db.run(addQuery, [title, description, status, priority, due_date]);
 
-    res.json({ message: "Task Added Successfully" });
+    res.status(201).json({ message: "Task Added Successfully" });
   } catch (e) {
     console.error("Error adding task:", e.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Error adding task" });
   }
 });
+
 
 
 // 3️ PATCH update task
