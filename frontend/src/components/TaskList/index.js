@@ -21,7 +21,7 @@ const TaskList = ({ tasks, filterStatus, setFilterStatus, refreshTasks }) => {
         <h2 className="heading">Tasks</h2>
 
         <div className="filter-container">
-          <label htmlFor="filterStatus">Filter by Status:</label>
+          <label htmlFor="filterStatus" className="filter-status">Filter by Status:</label>
           <select
             id="filterStatus"
             value={filterStatus}

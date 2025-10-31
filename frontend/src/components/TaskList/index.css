@@ -1,9 +1,13 @@
 .task-list {
   flex: 1;
-  background: #fff;
+  background: #000000;
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.filter-status {
+    color: #ffffff;
 }
 
 .header-container {
@@ -28,6 +32,7 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  background-color: #ffffff;
 }
 
 .task-table th,
