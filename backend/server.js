@@ -82,9 +82,17 @@ app.post("/tasks", async (req, res) => {
       VALUES (?, ?, ?, ?, ?);
     `;
 
-    await db.run(addQuery, [title, description, status, priority, due_date]);
+    const result = await db.run(addQuery, [title, description, status, priority, due_date]);
 
-    res.status(201).json({ message: "Task Added Successfully" });
+    // Return newly created task as JSON
+    res.status(201).json({
+      id: result.lastID,
+      title,
+      description,
+      status,
+      priority,
+      due_date,
+    });
   } catch (e) {
     console.error("Error adding task:", e.message);
     res.status(500).json({ error: "Error adding task" });
