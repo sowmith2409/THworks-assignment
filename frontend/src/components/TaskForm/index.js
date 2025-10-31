@@ -22,7 +22,7 @@ const TaskForm = ({ refreshTasks}) => {
       return;
     }
 
-    await fetch("http://localhost:3000/tasks", {
+    await fetch("https://thworks-assignment.onrender.com/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(task),

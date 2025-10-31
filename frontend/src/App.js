@@ -9,7 +9,7 @@ const App = () => {
 
   const fetchTasks = async (status = "All") => {
     try {
-      let url = "http://localhost:3000/tasks";
+      let url = "https://thworks-assignment.onrender.com";
       if (status !== "All") {
         url += `?status=${encodeURIComponent(status)}`;
       }
