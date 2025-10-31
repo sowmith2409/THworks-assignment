@@ -33,9 +33,8 @@ const initializeDBAndServer = async () => {
     `);
     console.log("Tasks table ready");
 
-    app.listen(3000, () =>
-      console.log("Server running at http://localhost:3000/")
-    );
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
   } catch (e) {
     console.log(`DB Error: ${e.message}`);
     process.exit(1);
@@ -73,9 +72,10 @@ app.post("/tasks", async (req, res) => {
   try {
     const { title, description, status, priority, due_date } = req.body;
     const addQuery = `
-      INSERT INTO tasks (title, description, status, priority, due_date)
-      VALUES ('${title}', '${description}', '${status}', '${priority}', '${due_date}');
+        INSERT INTO tasks (title, description, status, priority, due_date)
+        VALUES (?, ?, ?, ?, ?);
     `;
+    await db.run(addQuery, [title, description, status, priority, due_date]);
     await db.run(addQuery);
     res.send("Task Added Successfully");
   } catch (e) {
@@ -91,17 +91,16 @@ app.patch("/tasks/:id", async (req, res) => {
     const { title, description, status, priority, due_date } = req.body;
 
     const updateQuery = `
-      UPDATE tasks
-      SET 
-        title = COALESCE('${title}', title),
-        description = COALESCE('${description}', description),
-        status = COALESCE('${status}', status),
-        priority = COALESCE('${priority}', priority),
-        due_date = COALESCE('${due_date}', due_date)
-      WHERE id = ${id};
+    UPDATE tasks
+    SET 
+        title = COALESCE(?, title),
+        description = COALESCE(?, description),
+        status = COALESCE(?, status),
+        priority = COALESCE(?, priority),
+        due_date = COALESCE(?, due_date)
+    WHERE id = ?;
     `;
-    await db.run(updateQuery);
-    res.send("Task Updated Successfully");
+    await db.run(updateQuery, [title, description, status, priority, due_date, id]);
   } catch (e) {
     res.status(400).send("Error updating task");
   }
