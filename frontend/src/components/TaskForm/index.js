@@ -15,18 +15,27 @@ const TaskForm = ({ refreshTasks}) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!task.title.trim() || !task.description.trim() || !task.due_date) {
-      alert("Please fill out all fields before submitting.");
-      return;
-    }
+  if (!task.title.trim() || !task.description.trim() || !task.due_date) {
+    alert("Please fill out all fields before submitting.");
+    return;
+  }
 
-    await fetch("https://thworks-assignment.onrender.com/tasks", {
+  try {
+    const response = await fetch("https://thworks-assignment.onrender.com/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(task),
     });
+
+    const data = await response.json(); // ✅ expect JSON
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to add task");
+    }
+
+    console.log(data.message);
+    refreshTasks();
 
     setTask({
       title: "",
@@ -35,9 +44,12 @@ const TaskForm = ({ refreshTasks}) => {
       priority: "Medium",
       due_date: "",
     });
+  } catch (error) {
+    console.error("Error adding task:", error);
+    alert("Error adding task. Please try again.");
+  }
+};
 
-    refreshTasks();
-  };
 
   return (
     <form className="task-form" onSubmit={handleSubmit}>
