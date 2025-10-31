@@ -72,7 +72,6 @@ app.post("/tasks", async (req, res) => {
   try {
     const { title, description, status, priority, due_date } = req.body;
 
-    // Validate required fields
     if (!title || !description || !due_date) {
       return res.status(400).json({ error: "Missing required fields" });
     }
@@ -81,23 +80,16 @@ app.post("/tasks", async (req, res) => {
       INSERT INTO tasks (title, description, status, priority, due_date)
       VALUES (?, ?, ?, ?, ?);
     `;
+    await db.run(addQuery, [title, description, status, priority, due_date]);
 
-    const result = await db.run(addQuery, [title, description, status, priority, due_date]);
-
-    // Return newly created task as JSON
-    res.status(201).json({
-      id: result.lastID,
-      title,
-      description,
-      status,
-      priority,
-      due_date,
-    });
+    // ✅ Send proper JSON response
+    res.status(201).json({ message: "Task added successfully" });
   } catch (e) {
     console.error("Error adding task:", e.message);
     res.status(500).json({ error: "Error adding task" });
   }
 });
+
 
 
 
