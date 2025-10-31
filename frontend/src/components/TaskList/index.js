@@ -6,7 +6,7 @@ const TaskList = ({ tasks, filterStatus, setFilterStatus, refreshTasks }) => {
     if (!window.confirm("Are you sure you want to delete this task?")) return;
 
     try {
-      await fetch(`http://localhost:3000/tasks/${id}`, {
+      await fetch(`https://thworks-assignment.onrender.com/tasks/${id}`, {
         method: "DELETE",
       });
       refreshTasks(filterStatus);
