@@ -33,7 +33,7 @@ const initializeDBAndServer = async () => {
     `);
     console.log("Tasks table ready");
 
-    const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (e) {
     console.log(`DB Error: ${e.message}`);
@@ -71,15 +71,28 @@ app.get("/tasks", async (req, res) => {
 app.post("/tasks", async (req, res) => {
   try {
     const { title, description, status, priority, due_date } = req.body;
+
+    if (!title) {
+      return res.status(400).json({ error: "Title is required" });
+    }
+
     const addQuery = `
-        INSERT INTO tasks (title, description, status, priority, due_date)
-        VALUES (?, ?, ?, ?, ?);
+      INSERT INTO tasks (title, description, status, priority, due_date)
+      VALUES (?, ?, ?, ?, ?);
     `;
-    await db.run(addQuery, [title, description, status, priority, due_date]);
-    await db.run(addQuery);
-    res.send("Task Added Successfully");
+
+    await db.run(addQuery, [
+      title,
+      description || null,
+      status || "pending",
+      priority || "Medium",
+      due_date || null,
+    ]);
+
+    res.json({ message: "Task Added Successfully" });
   } catch (e) {
-    res.status(400).send("Error adding task");
+    console.error("Error adding task:", e.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
